@@ -4,932 +4,537 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Morning Quiz - SHELL F.2</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Google Fonts -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
-        
-        body { 
-            font-family: 'Prompt', sans-serif; 
-            background-color: #f0f2f5;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* Mobile App Container Style */
-        .app-container {
-            max-width: 480px; /* Mobile width constraint */
-            margin: 0 auto;
-            min-height: 100vh;
-            background: white;
-            box-shadow: 0 0 20px rgba(0,0,0,0.05);
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Smooth Transitions */
-        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
+        body { font-family: 'Prompt', sans-serif; background-color: #f0f2f5; -webkit-tap-highlight-color: transparent; }
+        .app-container { max-width: 480px; margin: 0 auto; min-height: 100vh; background: white; position: relative; overflow-x: hidden; }
         .hidden { display: none !important; }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-
-        /* Shell Brand Colors */
         .bg-shell-yellow { background-color: #FBCE07; }
         .text-shell-red { color: #DD1D21; }
-        .bg-shell-red { background-color: #DD1D21; }
-        .border-shell-yellow { border-color: #FBCE07; }
-
-        /* Input Style */
-        .input-modern {
-            width: 100%;
-            padding: 14px 16px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            background: #f8fafc;
-            transition: all 0.2s;
-            font-size: 1rem;
-        }
-        .input-modern:focus {
-            outline: none;
-            border-color: #FBCE07;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(251, 206, 7, 0.2);
-        }
-
-        /* Button Modern */
-        .btn-primary {
-            background: linear-gradient(135deg, #DD1D21 0%, #b91c1c 100%);
-            color: white;
-            padding: 14px;
-            border-radius: 14px;
-            font-weight: 600;
-            width: 100%;
-            box-shadow: 0 4px 12px rgba(221, 29, 33, 0.3);
-            transition: transform 0.1s;
-        }
-        .btn-primary:active { transform: scale(0.98); }
-        .btn-primary:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
-
-        .btn-secondary {
-            background: #fff;
-            color: #334155;
-            border: 1px solid #e2e8f0;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 500;
-            width: 100%;
-        }
-
-        /* Dashboard Card */
-        .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            border: 1px solid #f1f5f9;
-        }
+        .input-modern { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; font-size: 0.95rem; }
+        .btn-primary { background: #DD1D21; color: white; padding: 12px; border-radius: 8px; font-weight: 600; width: 100%; text-align: center; }
+        .btn-secondary { background: white; color: #334155; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; width: 100%; }
+        .stat-card { background: white; border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px; border: 1px solid #f1f5f9; }
+        .tag { background: #e2e8f0; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; display: inline-flex; align-items: center; margin-right: 4px; margin-bottom: 4px; }
     </style>
 </head>
 <body>
-
     <div class="app-container">
-        
-        <!-- CONFIGURATION -->
         <script>
-            // --- นำ Web App URL ที่ได้จากการ Deploy Google Apps Script มาใส่ตรงนี้ ---
+            // --- ใส่ URL จากการ Deploy Code.gs ตรงนี้ ---
             const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwJxaPVPAID31W_i3HMZ_WRfq-j3AqoFKdPDksS5ftp5cR7nWyLlD66G871zsoForzV/exec"; 
-            const ADMIN_PIN = "1234"; // รหัสผ่าน Admin (เปลี่ยนได้ตามต้องการ)
+            const ADMIN_PIN = "1234"; 
         </script>
 
-        <!-- APP HEADER -->
-        <header class="bg-shell-yellow px-6 py-5 rounded-b-[30px] shadow-sm relative z-20">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="font-bold text-2xl text-slate-900 flex items-center gap-2">
-                        <i data-lucide="shield-check" class="text-shell-red w-7 h-7"></i>
-                        Morning Quiz
-                    </h1>
-                    <p class="text-xs font-semibold text-slate-700 mt-1 opacity-80">SHELL F.2 Safety System</p>
-                </div>
-                <!-- Admin Toggle -->
-                <button onclick="toggleAdminLogin()" class="p-2 bg-white/30 rounded-full hover:bg-white/50 transition">
-                    <i data-lucide="settings" class="w-5 h-5 text-slate-800"></i>
-                </button>
+        <!-- Header -->
+        <header class="bg-shell-yellow px-6 py-4 rounded-b-[20px] shadow-sm sticky top-0 z-20">
+            <div class="flex justify-between items-center">
+                <h1 class="font-bold text-xl text-slate-900 flex gap-2"><i data-lucide="shield-check" class="text-shell-red"></i> Morning Quiz</h1>
+                <button onclick="toggleAdminLogin()" class="p-2 bg-white/30 rounded-full"><i data-lucide="settings" class="w-5 h-5"></i></button>
             </div>
-            
-            <!-- User Status Card -->
-            <div id="header-user-card" class="hidden mt-4 bg-white/90 backdrop-blur p-3 rounded-xl flex items-center justify-between shadow-sm">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
-                        <i data-lucide="user" class="w-5 h-5 text-slate-500"></i>
-                    </div>
-                    <div>
-                        <p id="display-name" class="font-bold text-sm text-slate-800 leading-tight">User</p>
-                        <p id="display-empid" class="text-xs text-slate-500">ID: -</p>
-                    </div>
-                </div>
-                <div id="status-badge" class="text-[10px] px-2 py-1 rounded-full bg-green-100 text-green-700 font-bold flex items-center gap-1">
-                    <div class="w-2 h-2 rounded-full bg-green-500"></div> Online
-                </div>
+            <div id="header-user-card" class="hidden mt-2 text-xs flex justify-between">
+                <span id="display-name" class="font-bold">User</span>
+                <span id="status-badge" class="px-2 py-0.5 rounded-full bg-green-100 text-green-700">Online</span>
             </div>
         </header>
 
-        <!-- MAIN CONTENT AREA -->
-        <main class="p-6 pb-24 relative z-10">
-
-            <!-- 1. LOGIN SECTION -->
-            <section id="step-login" class="slide-up">
-                <div class="text-center mb-8 mt-4">
-                    <div class="inline-flex items-center justify-center w-20 h-20 bg-red-50 rounded-full mb-4">
-                        <i data-lucide="log-in" class="w-10 h-10 text-shell-red"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-slate-800">ลงทะเบียนเข้าสอบ</h2>
-                    <p class="text-slate-500 text-sm mt-2">กรุณากรอกข้อมูลเพื่อเริ่มทำแบบทดสอบ</p>
-                </div>
-
+        <main class="p-6 pb-20">
+            <!-- 1. LOGIN -->
+            <section id="step-login">
+                <h2 class="text-xl font-bold text-center mb-6">เข้าสู่ระบบ</h2>
                 <form id="login-form" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">ชื่อ-นามสกุล</label>
-                        <input type="text" id="input-name" required class="input-modern" placeholder="เช่น สมชาย ใจดี">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">รหัสพนักงาน</label>
-                        <input type="tel" id="input-empid" required class="input-modern" placeholder="เช่น 12345">
-                    </div>
-                    <button type="submit" class="btn-primary mt-4 flex items-center justify-center gap-2">
-                        เข้าสู่ระบบ <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </button>
+                    <input type="text" id="input-name" required class="input-modern" placeholder="ชื่อ-นามสกุล">
+                    <input type="tel" id="input-empid" required class="input-modern" placeholder="รหัสพนักงาน">
+                    <button type="submit" class="btn-primary">เริ่มใช้งาน</button>
                 </form>
             </section>
 
-            <!-- 2. SELECT SECTION -->
-            <section id="step-select" class="hidden slide-up">
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-1 mb-6">
-                    <div class="p-4 border-b border-slate-50">
-                        <h2 class="font-bold text-lg text-slate-800">เลือกพื้นที่ปฏิบัติงาน</h2>
-                    </div>
-                    <div class="p-4 space-y-5">
-                        <div>
-                            <label class="text-sm font-medium text-slate-600 mb-2 block">Line (ไลน์การผลิต)</label>
-                            <div class="relative">
-                                <select id="select-line" class="input-modern appearance-none">
-                                    <option value="">-- กรุณาเลือก --</option>
-                                </select>
-                                <i data-lucide="chevron-down" class="absolute right-4 top-4 w-5 h-5 text-slate-400 pointer-events-none"></i>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="text-sm font-medium text-slate-600 mb-2 block">Process (กระบวนการ)</label>
-                            <div class="relative">
-                                <select id="select-process" disabled class="input-modern appearance-none bg-slate-100 text-slate-400">
-                                    <option value="">-- รอเลือก Line --</option>
-                                </select>
-                                <i data-lucide="chevron-down" class="absolute right-4 top-4 w-5 h-5 text-slate-400 pointer-events-none"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="mock-warning" class="hidden mb-6 p-4 bg-yellow-50 rounded-xl border border-yellow-100 flex gap-3">
-                    <i data-lucide="wifi-off" class="w-5 h-5 text-yellow-600 shrink-0 mt-0.5"></i>
-                    <div class="text-sm text-yellow-800">
-                        <strong>Offline Mode:</strong> ไม่สามารถเชื่อมต่อระบบได้ ข้อมูลจะใช้ชุดจำลอง
-                    </div>
-                </div>
-
-                <button id="btn-start-quiz" disabled class="btn-primary flex justify-center items-center gap-2">
-                    เริ่มทำแบบทดสอบ <i data-lucide="play-circle" class="w-5 h-5"></i>
-                </button>
-            </section>
-
-            <!-- 3. QUIZ SECTION -->
-            <section id="step-quiz" class="hidden slide-up">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="font-bold text-lg text-slate-800">แบบทดสอบ</h2>
-                    <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-md" id="quiz-process-tag"></span>
-                </div>
-
-                <div id="questions-container" class="space-y-6">
-                    <!-- Questions Injected Here -->
-                </div>
-
-                <div class="mt-8 pt-4 border-t border-slate-100">
-                    <button id="btn-submit-quiz" class="btn-primary">ส่งคำตอบ</button>
+            <!-- 2. SELECT -->
+            <section id="step-select" class="hidden">
+                <h2 class="font-bold mb-4">เลือกพื้นที่</h2>
+                <div id="mock-warning" class="hidden mb-4 p-3 bg-yellow-50 text-yellow-700 text-xs rounded border border-yellow-200">Offline Mode (Mock Data)</div>
+                <div class="space-y-4">
+                    <select id="select-line" class="input-modern"><option value="">-- เลือก Line --</option></select>
+                    <select id="select-process" disabled class="input-modern bg-gray-100"><option value="">-- เลือก Process --</option></select>
+                    <button id="btn-start-quiz" disabled class="btn-primary opacity-50">ทำแบบทดสอบ</button>
                 </div>
             </section>
 
-            <!-- 4. RESULT SECTION -->
-            <section id="step-result" class="hidden slide-up text-center pt-8">
-                <!-- Pass State -->
+            <!-- 3. QUIZ -->
+            <section id="step-quiz" class="hidden">
+                <h2 class="font-bold mb-4">แบบทดสอบ <span id="quiz-process-tag" class="text-xs font-normal bg-gray-100 px-2 py-1 rounded"></span></h2>
+                <div id="questions-container" class="space-y-6"></div>
+                <button id="btn-submit-quiz" class="btn-primary mt-6">ส่งคำตอบ</button>
+            </section>
+
+            <!-- 4. RESULT -->
+            <section id="step-result" class="hidden text-center pt-4">
                 <div id="result-pass" class="hidden">
-                    <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-                        <i data-lucide="check" class="w-12 h-12 text-green-600"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-slate-800 mb-2">ผ่านการทดสอบ!</h2>
-                    <p class="text-slate-500 mb-8">คุณมีความพร้อมในการปฏิบัติงาน</p>
-                    
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-left mb-6">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm text-slate-500">คะแนนที่ได้</span>
-                            <span class="font-bold text-xl text-green-600 score-display">5/5</span>
-                        </div>
-                        <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-green-500 w-full"></div>
-                        </div>
-                    </div>
+                    <i data-lucide="check-circle" class="w-16 h-16 text-green-500 mx-auto mb-4"></i>
+                    <h2 class="text-xl font-bold text-green-600">ผ่านการทดสอบ!</h2>
                 </div>
-
-                <!-- Fail State -->
                 <div id="result-fail" class="hidden">
-                    <div class="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-                        <i data-lucide="x" class="w-12 h-12 text-red-600"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-slate-800 mb-2">ไม่ผ่านเกณฑ์</h2>
-                    <p class="text-slate-500 mb-8">ต้องตอบถูกทุกข้อ (100%)</p>
-
-                    <div class="bg-red-50 p-4 rounded-xl text-red-700 text-sm mb-6 flex gap-3 text-left">
-                        <i data-lucide="alert-circle" class="w-5 h-5 shrink-0"></i>
-                        <span>กรุณาทบทวนความรู้และทำแบบทดสอบใหม่อีกครั้ง</span>
-                    </div>
+                    <i data-lucide="x-circle" class="w-16 h-16 text-red-500 mx-auto mb-4"></i>
+                    <h2 class="text-xl font-bold text-red-600">ไม่ผ่านเกณฑ์</h2>
+                    <p class="text-sm text-gray-500">ต้องถูกทุกข้อ (100%)</p>
                 </div>
-
+                <div class="my-6 text-xl font-bold score-display"></div>
                 <button onclick="location.reload()" class="btn-secondary">กลับหน้าหลัก</button>
             </section>
 
-            <!-- 5. ADMIN LOGIN OVERLAY -->
-            <div id="admin-login-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-                <div class="bg-white w-full max-w-xs p-6 rounded-2xl shadow-2xl animate-bounce-in">
-                    <div class="text-center mb-6">
-                        <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i data-lucide="lock" class="w-6 h-6 text-slate-700"></i>
-                        </div>
-                        <h3 class="font-bold text-lg">Admin Access</h3>
-                        <p class="text-xs text-slate-400">กรุณากรอกรหัสผ่านเพื่อแก้ไขข้อมูล</p>
-                    </div>
-                    <input type="password" id="admin-pin-input" class="input-modern text-center tracking-widest text-xl mb-4" placeholder="PIN" maxlength="4">
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="closeAdminLogin()" class="btn-secondary">ยกเลิก</button>
-                        <button onclick="checkAdminLogin()" class="btn-primary bg-slate-800">ยืนยัน</button>
-                    </div>
+            <!-- ADMIN DASHBOARD -->
+            <section id="step-admin" class="hidden pb-20">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold">ผู้ดูแลระบบ (Admin)</h2>
+                    <button onclick="exitAdmin()" class="text-red-500 text-sm">ออก</button>
                 </div>
-            </div>
-
-            <!-- 6. ADMIN DASHBOARD -->
-            <section id="step-admin" class="hidden slide-up pb-20">
-                <div class="bg-slate-800 text-white p-6 rounded-2xl mb-6 shadow-lg">
-                    <div class="flex justify-between items-start mb-4">
-                        <h2 class="text-xl font-bold">Admin Dashboard</h2>
-                        <button onclick="exitAdmin()" class="bg-white/20 p-2 rounded-lg hover:bg-white/30">
-                            <i data-lucide="log-out" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                    <div class="flex gap-2 overflow-x-auto pb-2">
-                        <button onclick="switchAdminTab('dashboard')" id="tab-dashboard" class="flex-1 py-2 px-3 rounded-lg text-sm font-medium bg-white text-slate-900 transition whitespace-nowrap">Dashboard</button>
-                        <button onclick="switchAdminTab('master')" id="tab-master" class="flex-1 py-2 px-3 rounded-lg text-sm font-medium bg-slate-700 text-slate-300 transition whitespace-nowrap">Master Data</button>
-                        <button onclick="switchAdminTab('questions')" id="tab-questions" class="flex-1 py-2 px-3 rounded-lg text-sm font-medium bg-slate-700 text-slate-300 transition whitespace-nowrap">Questions</button>
-                    </div>
+                
+                <!-- Admin Tabs -->
+                <div class="flex gap-2 mb-4 overflow-x-auto">
+                    <button onclick="switchTab('dashboard')" id="tab-dashboard" class="px-3 py-2 bg-slate-800 text-white rounded text-sm whitespace-nowrap">Dashboard</button>
+                    <button onclick="switchTab('master')" id="tab-master" class="px-3 py-2 bg-white border rounded text-sm whitespace-nowrap">Master Data</button>
+                    <button onclick="switchTab('questions')" id="tab-questions" class="px-3 py-2 bg-white border rounded text-sm whitespace-nowrap">จัดการข้อสอบ</button>
                 </div>
 
-                <!-- Tab: Dashboard Summary -->
-                <div id="admin-view-dashboard" class="space-y-6">
-                    <!-- Stats Cards -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="stat-card">
-                            <div class="flex items-center gap-2 mb-2">
-                                <i data-lucide="users" class="w-4 h-4 text-blue-500"></i>
-                                <span class="text-xs text-slate-500">สอบทั้งหมด</span>
-                            </div>
-                            <p class="text-2xl font-bold text-slate-800" id="dash-total">-</p>
-                        </div>
-                        <div class="stat-card">
-                            <div class="flex items-center gap-2 mb-2">
-                                <i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i>
-                                <span class="text-xs text-slate-500">ผ่านเกณฑ์</span>
-                            </div>
-                            <p class="text-2xl font-bold text-green-600" id="dash-passed">-</p>
-                        </div>
+                <!-- DASHBOARD VIEW -->
+                <div id="view-dashboard">
+                    <div class="stat-card mb-4 text-center">
+                        <p class="text-sm text-gray-500">เข้าสอบทั้งหมด</p>
+                        <p class="text-3xl font-bold text-blue-600" id="dash-total">-</p>
+                        <p class="text-xs text-gray-400 mt-1">ครั้ง</p>
                     </div>
-
-                    <!-- Pass Rate -->
-                    <div class="stat-card p-5">
-                        <h3 class="font-bold text-slate-800 mb-3 text-sm">อัตราการผ่าน (Pass Rate)</h3>
-                        <div class="flex items-center gap-3 mb-2">
-                            <div class="flex-1 h-3 bg-red-100 rounded-full overflow-hidden flex">
-                                <div id="dash-rate-bar" class="bg-green-500 h-full transition-all duration-500" style="width: 0%"></div>
-                            </div>
-                            <span class="text-xs font-bold text-slate-600" id="dash-rate-text">0%</span>
+                    <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+                        <div class="bg-slate-100 px-4 py-2 text-sm font-bold flex justify-between items-center">
+                            <span>ประวัติล่าสุด</span>
+                            <button onclick="fetchDashboard()" class="text-blue-500 text-xs"><i data-lucide="rotate-cw" class="w-3 h-3"></i></button>
                         </div>
-                        <div class="flex justify-between text-xs text-slate-400">
-                             <span>ไม่ผ่าน: <span id="dash-failed">0</span></span>
-                             <span>รวม: <span id="dash-total-sub">0</span></span>
-                        </div>
-                    </div>
-
-                    <!-- Recent Activity -->
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-bold text-slate-800 text-sm">การสอบล่าสุด</h3>
-                            <button onclick="fetchDashboardData()" class="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 flex items-center gap-1">
-                                <i data-lucide="rotate-cw" class="w-3 h-3"></i> รีเฟรช
-                            </button>
-                        </div>
-                        <div class="space-y-3" id="dash-recent-list">
-                            <div class="text-center text-slate-400 text-xs py-4">กำลังโหลดข้อมูล...</div>
+                        <div id="dash-history-list" class="divide-y divide-slate-100 text-sm">
+                            <div class="p-4 text-center text-gray-400">กำลังโหลด...</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tab: Master Data -->
-                <div id="admin-view-master" class="hidden space-y-6">
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
-                        <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
-                            <i data-lucide="layers" class="w-5 h-5 text-blue-500"></i> จัดการ Lines
-                        </h3>
-                        <textarea id="edit-lines" rows="4" class="input-modern font-mono text-sm" placeholder="Line A, Line B, Line C... (คั่นด้วยจุลภาค)"></textarea>
-                        <p class="text-xs text-slate-400 mt-2">*ใส่ชื่อ Line คั่นด้วยเครื่องหมายจุลภาค (,)</p>
+                <!-- MASTER DATA VIEW -->
+                <div id="view-master" class="hidden space-y-6">
+                    <!-- Lines Manager -->
+                    <div class="bg-white p-4 rounded-lg border">
+                        <h3 class="font-bold mb-2">จัดการ Lines</h3>
+                        <div class="flex gap-2 mb-3">
+                            <input type="text" id="new-line-input" class="input-modern py-2" placeholder="ชื่อ Line ใหม่">
+                            <button onclick="addItem('lines')" class="bg-green-500 text-white px-4 rounded-lg"><i data-lucide="plus"></i></button>
+                        </div>
+                        <div id="list-lines" class="flex flex-wrap gap-2"></div>
                     </div>
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
-                        <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
-                            <i data-lucide="refresh-cw" class="w-5 h-5 text-purple-500"></i> จัดการ Processes
-                        </h3>
-                        <textarea id="edit-processes" rows="4" class="input-modern font-mono text-sm" placeholder="Process 1, Process 2..."></textarea>
+
+                    <!-- Process Manager -->
+                    <div class="bg-white p-4 rounded-lg border">
+                        <h3 class="font-bold mb-2">จัดการ Processes</h3>
+                        <div class="flex gap-2 mb-3">
+                            <input type="text" id="new-proc-input" class="input-modern py-2" placeholder="ชื่อ Process ใหม่">
+                            <button onclick="addItem('processes')" class="bg-green-500 text-white px-4 rounded-lg"><i data-lucide="plus"></i></button>
+                        </div>
+                        <div id="list-processes" class="flex flex-wrap gap-2"></div>
                     </div>
-                    <button onclick="saveMasterData()" id="btn-save-master" class="btn-primary bg-slate-800">บันทึกข้อมูล Master</button>
+                    <button onclick="saveMasterConfig()" id="btn-save-master" class="btn-primary bg-slate-800">บันทึกการเปลี่ยนแปลงทั้งหมด</button>
                 </div>
 
-                <!-- Tab: Add Question -->
-                <div id="admin-view-questions" class="hidden space-y-5">
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
-                        <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">เพิ่มข้อสอบใหม่</h3>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="text-xs font-bold text-slate-500 uppercase">ส่วนของข้อสอบ</label>
-                                <select id="new-q-part" class="input-modern" onchange="toggleProcessSelect()">
-                                    <option value="1">ส่วนที่ 1 (ทั่วไป - สุ่ม 2 ข้อ)</option>
-                                    <option value="2">ส่วนที่ 2 (Process - สุ่ม 2 ข้อ)</option>
-                                    <option value="3">ส่วนที่ 3 (Critical - สุ่ม 1 ข้อ)</option>
-                                </select>
-                            </div>
-
-                            <div id="new-q-process-wrapper" class="hidden">
-                                <label class="text-xs font-bold text-slate-500 uppercase">สำหรับ Process</label>
-                                <select id="new-q-process" class="input-modern">
-                                    <!-- Populated by JS -->
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="text-xs font-bold text-slate-500 uppercase">คำถาม</label>
-                                <textarea id="new-q-text" rows="2" class="input-modern" placeholder="พิมพ์คำถามที่นี่..."></textarea>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="text-xs font-bold text-slate-500">ตัวเลือก 1 (ก)</label>
-                                    <input type="text" id="opt-1" class="input-modern" placeholder="ตัวเลือก 1">
-                                </div>
-                                <div>
-                                    <label class="text-xs font-bold text-slate-500">ตัวเลือก 2 (ข)</label>
-                                    <input type="text" id="opt-2" class="input-modern" placeholder="ตัวเลือก 2">
-                                </div>
-                                <div class="col-span-2 grid grid-cols-2 gap-3" id="extra-options">
-                                    <div>
-                                        <label class="text-xs font-bold text-slate-500">ตัวเลือก 3 (ค)</label>
-                                        <input type="text" id="opt-3" class="input-modern" placeholder="ตัวเลือก 3">
-                                    </div>
-                                    <!-- Option 4 can be added if needed, sticking to 3 for parts 2/3 -->
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="text-xs font-bold text-slate-500 uppercase">คำตอบที่ถูกต้อง</label>
-                                <select id="new-q-correct" class="input-modern bg-green-50 border-green-200">
-                                    <option value="1">ตัวเลือกที่ 1</option>
-                                    <option value="2">ตัวเลือกที่ 2</option>
-                                    <option value="3">ตัวเลือกที่ 3</option>
-                                </select>
-                            </div>
-                        </div>
+                <!-- QUESTIONS VIEW -->
+                <div id="view-questions" class="hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <select id="filter-part" onchange="fetchAdminQuestions()" class="border p-2 rounded text-sm">
+                            <option value="1">ส่วนที่ 1 (ทั่วไป)</option>
+                            <option value="2">ส่วนที่ 2 (Process)</option>
+                            <option value="3">ส่วนที่ 3 (Critical)</option>
+                        </select>
+                        <button onclick="openAddQuestionModal()" class="bg-green-600 text-white px-3 py-2 rounded text-sm flex items-center gap-1"><i data-lucide="plus-circle" class="w-4 h-4"></i> เพิ่มข้อสอบ</button>
                     </div>
-                    <button onclick="saveNewQuestion()" id="btn-save-question" class="btn-primary bg-slate-800">บันทึกข้อสอบ</button>
+                    <div id="admin-q-list" class="space-y-3">
+                        <div class="text-center text-gray-400 py-4">เลือกส่วนเพื่อดูข้อสอบ</div>
+                    </div>
                 </div>
             </section>
-
         </main>
+
+        <!-- ADD/EDIT QUESTION MODAL -->
+        <div id="q-modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
+            <div class="bg-white w-full max-w-md p-5 rounded-xl max-h-[90vh] overflow-y-auto">
+                <h3 class="font-bold text-lg mb-4" id="q-modal-title">เพิ่มข้อสอบ</h3>
+                <input type="hidden" id="q-edit-row">
+                <div class="space-y-3">
+                    <div id="q-proc-wrapper">
+                        <label class="text-xs text-gray-500">Process</label>
+                        <select id="q-process" class="input-modern py-2"></select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">คำถาม</label>
+                        <textarea id="q-text" class="input-modern" rows="2"></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input id="q-opt1" placeholder="ตัวเลือก 1" class="input-modern py-2">
+                        <input id="q-opt2" placeholder="ตัวเลือก 2" class="input-modern py-2">
+                    </div>
+                    <input id="q-opt3" placeholder="ตัวเลือก 3 (เว้นว่างได้ถ้า Part 1)" class="input-modern py-2">
+                    <div>
+                        <label class="text-xs text-gray-500">เฉลย (เลือกให้ตรงกับตัวเลือก)</label>
+                        <select id="q-correct-idx" class="input-modern py-2 bg-green-50">
+                            <option value="1">ตัวเลือกที่ 1</option>
+                            <option value="2">ตัวเลือกที่ 2</option>
+                            <option value="3">ตัวเลือกที่ 3</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-6 flex gap-2">
+                    <button onclick="document.getElementById('q-modal').classList.add('hidden')" class="btn-secondary">ยกเลิก</button>
+                    <button onclick="submitQuestion()" class="btn-primary">บันทึก</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PIN MODAL -->
+        <div id="pin-modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
+            <div class="bg-white p-6 rounded-xl w-64 text-center">
+                <h3 class="font-bold mb-4">Admin PIN</h3>
+                <input type="password" id="pin-input" class="border p-2 rounded w-full text-center text-xl tracking-widest mb-4" maxlength="4">
+                <div class="flex gap-2">
+                    <button onclick="document.getElementById('pin-modal').classList.add('hidden')" class="btn-secondary">ยกเลิก</button>
+                    <button onclick="checkPin()" class="btn-primary">ยืนยัน</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // --- CORE STATE ---
-        let state = {
-            user: { name: '', empId: '' },
-            selection: { line: '', process: '' },
-            questions: [],
-            answers: {},
-            lines: [],
-            processes: [],
-            isMock: false,
-            isAdmin: false
-        };
+        // --- CORE LOGIC ---
+        let state = { lines: [], processes: [], questions: [], isMock: false };
+        const mockLines = ["Line A", "Line B"];
+        const mockProcs = ["Process 1", "Process 2"];
 
-        // --- FALLBACK DATA ---
-        const FALLBACK_DATA = {
-            lines: ["Line A", "Line B", "Line C"],
-            processes: Array.from({ length: 5 }, (_, i) => `Process ${i + 1}`)
-        };
-
-        // --- INITIALIZATION ---
         lucide.createIcons();
 
-        // --- NAVIGATION ---
-        const sections = {
-            login: document.getElementById('step-login'),
-            select: document.getElementById('step-select'),
-            quiz: document.getElementById('step-quiz'),
-            result: document.getElementById('step-result'),
-            admin: document.getElementById('step-admin')
-        };
-
-        function showSection(name) {
-            Object.values(sections).forEach(el => el.classList.add('hidden'));
-            sections[name].classList.remove('hidden');
-            window.scrollTo(0,0);
-            lucide.createIcons();
-        }
-
-        function setStatus(status) {
-            const badge = document.getElementById('status-badge');
-            const warning = document.getElementById('mock-warning');
-            
-            if (status === 'connected') {
-                badge.className = "text-[10px] px-2 py-1 rounded-full bg-green-100 text-green-700 font-bold flex items-center gap-1";
-                badge.innerHTML = `<div class="w-2 h-2 rounded-full bg-green-500"></div> Online`;
-                warning.classList.add('hidden');
-                state.isMock = false;
-            } else {
-                badge.className = "text-[10px] px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 font-bold flex items-center gap-1";
-                badge.innerHTML = `<div class="w-2 h-2 rounded-full bg-yellow-500"></div> Offline`;
-                warning.classList.remove('hidden');
-                state.isMock = true;
-            }
-        }
-
-        // --- USER FLOW ---
-        
-        // 1. Login
+        // Login Flow
         document.getElementById('login-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            const name = document.getElementById('input-name').value.trim();
-            const empId = document.getElementById('input-empid').value.trim();
+            const name = document.getElementById('input-name').value;
+            const empId = document.getElementById('input-empid').value;
             if(name && empId) {
-                state.user = { name, empId };
+                document.getElementById('step-login').classList.add('hidden');
+                document.getElementById('step-select').classList.remove('hidden');
                 document.getElementById('header-user-card').classList.remove('hidden');
                 document.getElementById('display-name').innerText = name;
-                document.getElementById('display-empid').innerText = `ID: ${empId}`;
-                showSection('select');
+                state.user = { name, empId };
                 fetchMasterData();
             }
         });
 
-        // 2. Fetch Master Data
         async function fetchMasterData() {
             try {
-                if(!GOOGLE_SCRIPT_URL) throw new Error("No URL");
-                
-                // Fetch Dropdowns
+                if(!GOOGLE_SCRIPT_URL) throw new Error();
                 const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=getDropdowns`);
-                const text = await res.text();
-                let data;
-                try { data = JSON.parse(text); } catch(e) { throw new Error("Invalid JSON"); }
-
-                state.lines = (data.lines && data.lines.length) ? data.lines : FALLBACK_DATA.lines;
-                state.processes = (data.processes && data.processes.length) ? data.processes : FALLBACK_DATA.processes;
-                setStatus('connected');
-
+                const data = await res.json();
+                state.lines = data.lines || [];
+                state.processes = data.processes || [];
+                state.isMock = false;
+                document.getElementById('status-badge').className = "px-2 py-0.5 rounded-full bg-green-100 text-green-700";
+                document.getElementById('status-badge').innerText = "Online";
             } catch(e) {
-                console.warn("Using fallback data", e);
-                state.lines = FALLBACK_DATA.lines;
-                state.processes = FALLBACK_DATA.processes;
-                setStatus('offline');
-            } finally {
-                populateDropdown('select-line', state.lines);
-                populateDropdown('select-process', state.processes);
-                populateDropdown('new-q-process', state.processes); // For Admin
-                
-                // Populate Admin Textareas
-                document.getElementById('edit-lines').value = state.lines.join(', ');
-                document.getElementById('edit-processes').value = state.processes.join(', ');
+                state.lines = mockLines;
+                state.processes = mockProcs;
+                state.isMock = true;
+                document.getElementById('status-badge').className = "px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700";
+                document.getElementById('status-badge').innerText = "Offline";
+                document.getElementById('mock-warning').classList.remove('hidden');
             }
+            renderDropdowns();
         }
 
-        function populateDropdown(id, items) {
-            const select = document.getElementById(id);
-            const firstOpt = select.options[0];
-            select.innerHTML = '';
-            select.appendChild(firstOpt);
-            items.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item;
-                opt.innerText = item;
-                select.appendChild(opt);
-            });
+        function renderDropdowns() {
+            const lineSel = document.getElementById('select-line');
+            const procSel = document.getElementById('select-process');
+            lineSel.innerHTML = '<option value="">-- เลือก Line --</option>';
+            state.lines.forEach(l => lineSel.innerHTML += `<option value="${l}">${l}</option>`);
+            
+            procSel.innerHTML = '<option value="">-- เลือก Process --</option>';
+            state.processes.forEach(p => procSel.innerHTML += `<option value="${p}">${p}</option>`);
+            
+            // Render Admin Lists too
+            renderAdminTags('lines', state.lines);
+            renderAdminTags('processes', state.processes);
+            
+            // Render Select inside Modal
+            const qProc = document.getElementById('q-process');
+            qProc.innerHTML = '';
+            state.processes.forEach(p => qProc.innerHTML += `<option value="${p}">${p}</option>`);
         }
 
-        // 3. Select Logic
         document.getElementById('select-line').addEventListener('change', (e) => {
-            state.selection.line = e.target.value;
-            const procSelect = document.getElementById('select-process');
-            procSelect.disabled = !e.target.value;
-            if(!e.target.value) {
-                procSelect.classList.add('bg-slate-100', 'text-slate-400');
-            } else {
-                procSelect.classList.remove('bg-slate-100', 'text-slate-400');
-            }
-            checkStartBtn();
+            const proc = document.getElementById('select-process');
+            proc.disabled = !e.target.value;
+            proc.classList.toggle('bg-gray-100', !e.target.value);
+            state.selLine = e.target.value;
+            checkStart();
         });
-
         document.getElementById('select-process').addEventListener('change', (e) => {
-            state.selection.process = e.target.value;
-            checkStartBtn();
+            state.selProc = e.target.value;
+            checkStart();
         });
 
-        function checkStartBtn() {
-            document.getElementById('btn-start-quiz').disabled = !(state.selection.line && state.selection.process);
+        function checkStart() {
+            document.getElementById('btn-start-quiz').disabled = !(state.selLine && state.selProc);
+            document.getElementById('btn-start-quiz').classList.toggle('opacity-50', !(state.selLine && state.selProc));
         }
 
-        // 4. Fetch & Start Quiz
         document.getElementById('btn-start-quiz').addEventListener('click', async () => {
             const btn = document.getElementById('btn-start-quiz');
-            btn.innerHTML = `<span class="animate-spin">⌛</span> กำลังโหลด...`;
-            btn.disabled = true;
+            btn.innerText = "กำลังโหลด...";
+            try {
+                let qs = [];
+                if(state.isMock) {
+                    qs = [{id:1, text:"Mock Q1", options:["A","B"], correct:"A"}];
+                } else {
+                    const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=getQuestions&process=${encodeURIComponent(state.selProc)}`);
+                    const data = await res.json();
+                    qs = data.questions;
+                }
+                state.currentQs = qs;
+                renderQuiz(qs);
+                document.getElementById('step-select').classList.add('hidden');
+                document.getElementById('step-quiz').classList.remove('hidden');
+                document.getElementById('quiz-process-tag').innerText = state.selProc;
+            } catch(e) { alert("Error: " + e.message); }
+            btn.innerText = "ทำแบบทดสอบ";
+        });
+
+        function renderQuiz(qs) {
+            const c = document.getElementById('questions-container');
+            c.innerHTML = '';
+            state.answers = {};
+            qs.forEach((q, idx) => {
+                let opts = '';
+                q.options.forEach((o, i) => {
+                    opts += `<label class="block p-3 border rounded-lg mb-2 cursor-pointer hover:bg-slate-50"><input type="radio" name="q${q.id}" value="${o}" onchange="state.answers['${q.id}']='${o}'" class="mr-2"> ${o}</label>`;
+                });
+                c.innerHTML += `<div class="bg-white p-4 rounded shadow-sm">
+                    <p class="font-bold mb-3">${idx+1}. ${q.text}</p>
+                    ${opts}
+                </div>`;
+            });
+        }
+
+        document.getElementById('btn-submit-quiz').addEventListener('click', async () => {
+            let score = 0;
+            state.currentQs.forEach(q => {
+                if(state.answers[q.id] == q.correct) score++;
+            });
+            const passed = score === state.currentQs.length;
+            
+            if(!state.isMock) {
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST', 
+                    body: JSON.stringify({
+                        action: 'submit', user: state.user, selection: {line: state.selLine, process: state.selProc},
+                        score, status: passed ? 'Passed' : 'Failed'
+                    })
+                });
+            }
+
+            document.getElementById('step-quiz').classList.add('hidden');
+            document.getElementById('step-result').classList.remove('hidden');
+            document.getElementById(passed ? 'result-pass' : 'result-fail').classList.remove('hidden');
+            document.querySelector('.score-display').innerText = `${score} / ${state.currentQs.length}`;
+        });
+
+        // --- ADMIN FUNCTIONS ---
+        function toggleAdminLogin() { document.getElementById('pin-modal').classList.remove('hidden'); }
+        function checkPin() {
+            if(document.getElementById('pin-input').value === ADMIN_PIN) {
+                document.getElementById('pin-modal').classList.add('hidden');
+                document.getElementById('step-login').classList.add('hidden');
+                document.getElementById('step-select').classList.add('hidden');
+                document.getElementById('step-admin').classList.remove('hidden');
+                switchTab('dashboard');
+                fetchDashboard();
+            } else alert("รหัสผิด");
+        }
+        function exitAdmin() { location.reload(); }
+
+        function switchTab(t) {
+            ['dashboard', 'master', 'questions'].forEach(x => {
+                document.getElementById(`view-${x}`).classList.add('hidden');
+                document.getElementById(`tab-${x}`).classList.replace('bg-slate-800','bg-white');
+                document.getElementById(`tab-${x}`).classList.replace('text-white','text-black');
+            });
+            document.getElementById(`view-${t}`).classList.remove('hidden');
+            document.getElementById(`tab-${t}`).classList.replace('bg-white','bg-slate-800');
+            document.getElementById(`tab-${t}`).classList.replace('text-black','text-white');
+        }
+
+        // Dashboard
+        async function fetchDashboard() {
+            if(state.isMock) {
+                document.getElementById('dash-total').innerText = "15 (Mock)";
+                document.getElementById('dash-history-list').innerHTML = `<div class="p-3">สมชาย - Line A - 5/5 (Passed)</div>`;
+                return;
+            }
+            try {
+                const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=getSummary`);
+                const data = await res.json();
+                document.getElementById('dash-total').innerText = data.total;
+                let html = '';
+                data.recent.forEach(r => {
+                    html += `<div class="p-3 flex justify-between items-center">
+                        <div>
+                            <div class="font-bold text-slate-700">${r.name}</div>
+                            <div class="text-[10px] text-gray-400">${r.line} | ${r.process} | ${r.time}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs font-bold ${r.status=='Passed'?'text-green-600':'text-red-500'}">${r.status}</div>
+                            <div class="text-[10px] text-gray-400">${r.score}</div>
+                        </div>
+                    </div>`;
+                });
+                document.getElementById('dash-history-list').innerHTML = html || '<div class="p-4 text-center text-gray-400">ยังไม่มีข้อมูล</div>';
+            } catch(e) { console.error(e); }
+        }
+
+        // Master Data (List Logic)
+        function renderAdminTags(key, arr) {
+            const el = document.getElementById(`list-${key}`);
+            el.innerHTML = '';
+            arr.forEach((item, idx) => {
+                el.innerHTML += `<div class="tag"><span>${item}</span><button onclick="removeItem('${key}', ${idx})" class="ml-1 text-red-500 font-bold">&times;</button></div>`;
+            });
+        }
+        function addItem(key) {
+            const input = key === 'lines' ? 'new-line-input' : 'new-proc-input';
+            const val = document.getElementById(input).value.trim();
+            if(val) {
+                if(key === 'lines') state.lines.push(val); else state.processes.push(val);
+                document.getElementById(input).value = '';
+                renderAdminTags(key, key === 'lines' ? state.lines : state.processes);
+            }
+        }
+        function removeItem(key, idx) {
+            if(confirm("ลบรายการนี้?")) {
+                if(key === 'lines') state.lines.splice(idx, 1); else state.processes.splice(idx, 1);
+                renderAdminTags(key, key === 'lines' ? state.lines : state.processes);
+            }
+        }
+        async function saveMasterConfig() {
+            const btn = document.getElementById('btn-save-master');
+            btn.innerText = "กำลังบันทึก..."; btn.disabled = true;
+            try {
+                if(!state.isMock) {
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'updateMaster', lines: state.lines, processes: state.processes })
+                    });
+                }
+                alert("บันทึกสำเร็จ");
+            } catch(e) { alert("Error"); }
+            btn.innerText = "บันทึกการเปลี่ยนแปลงทั้งหมด"; btn.disabled = false;
+        }
+
+        // Question Manager
+        async function fetchAdminQuestions() {
+            const part = document.getElementById('filter-part').value;
+            const container = document.getElementById('admin-q-list');
+            container.innerHTML = '<div class="text-center py-4">กำลังโหลด...</div>';
+            
+            // Toggle Add Button Visibility based on part (Part 1 no process)
+            document.getElementById('q-proc-wrapper').classList.toggle('hidden', part == '1');
+            document.getElementById('q-opt3').classList.toggle('hidden', part == '1');
+
+            if(state.isMock) return;
 
             try {
-                let questions = [];
-                if(state.isMock) {
-                    await new Promise(r => setTimeout(r, 800));
-                    questions = getMockQuestions();
-                } else {
-                    const url = `${GOOGLE_SCRIPT_URL}?action=getQuestions&line=${encodeURIComponent(state.selection.line)}&process=${encodeURIComponent(state.selection.process)}`;
-                    const res = await fetch(url);
-                    const data = await res.json();
-                    if(data.error) throw new Error(data.error);
-                    questions = data.questions;
-                }
+                const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=getAllQuestions`);
+                const data = await res.json();
+                state.adminQs = data; // store all
+                const currentList = data['part'+part] || [];
                 
-                state.questions = questions;
-                state.answers = {};
-                renderQuiz();
-                document.getElementById('quiz-process-tag').innerText = state.selection.process;
-                showSection('quiz');
-
-            } catch(e) {
-                alert("เกิดข้อผิดพลาดในการโหลดข้อสอบ: " + e.message);
-            } finally {
-                btn.innerHTML = `เริ่มทำแบบทดสอบ <i data-lucide="play-circle" class="w-5 h-5"></i>`;
-                btn.disabled = false;
-            }
-        });
-
-        function renderQuiz() {
-            const container = document.getElementById('questions-container');
-            container.innerHTML = '';
-            state.questions.forEach((q, idx) => {
-                const div = document.createElement('div');
-                div.className = 'bg-white p-5 rounded-2xl shadow-sm border border-slate-100';
+                container.innerHTML = '';
+                if(currentList.length === 0) container.innerHTML = '<div class="text-center py-4 text-gray-400">ไม่พบข้อสอบ</div>';
                 
-                let optionsHTML = '';
-                q.options.forEach((opt, optIdx) => {
-                    optionsHTML += `
-                        <label class="flex items-center p-3.5 rounded-xl border border-slate-100 cursor-pointer transition active:scale-95 hover:bg-slate-50 option-label" id="lbl-${idx}-${optIdx}">
-                            <div class="relative flex items-center justify-center w-5 h-5 rounded-full border-2 border-slate-300 mr-3 shrink-0">
-                                <input type="radio" name="q_${idx}" class="opacity-0 absolute inset-0 cursor-pointer" onchange="handleAnswer(${idx}, ${optIdx})">
-                                <div class="w-2.5 h-2.5 bg-shell-yellow rounded-full hidden check-indicator"></div>
-                            </div>
-                            <span class="text-slate-700 text-sm font-medium leading-snug">${opt}</span>
-                        </label>
-                    `;
+                currentList.forEach(q => {
+                    container.innerHTML += `<div class="bg-white p-3 rounded border shadow-sm relative">
+                        <div class="absolute top-2 right-2 flex gap-2">
+                            <button onclick="editQ(${part}, ${q.row})" class="text-blue-500 text-xs bg-blue-50 p-1 rounded">แก้ไข</button>
+                            <button onclick="delQ(${part}, ${q.row})" class="text-red-500 text-xs bg-red-50 p-1 rounded">ลบ</button>
+                        </div>
+                        <p class="text-xs font-bold text-gray-400 mb-1">${part != 1 ? q.ProcessName : 'General'}</p>
+                        <p class="font-bold text-sm mb-2 pr-16">${q.Question}</p>
+                        <div class="text-xs text-gray-600 pl-2 border-l-2 border-green-200">
+                            ✓ ${q.CorrectAnswer}
+                        </div>
+                    </div>`;
                 });
-
-                div.innerHTML = `
-                    <div class="mb-4">
-                        <span class="text-[10px] font-bold tracking-wider text-slate-400 uppercase">Question ${idx+1}</span>
-                        <h3 class="text-base font-semibold text-slate-800 mt-1">${q.text}</h3>
-                    </div>
-                    <div class="space-y-2.5" id="options-group-${idx}">${optionsHTML}</div>
-                `;
-                container.appendChild(div);
-            });
+            } catch(e) { console.error(e); }
         }
 
-        window.handleAnswer = (qIdx, optIdx) => {
-            const q = state.questions[qIdx];
-            state.answers[q.id] = q.options[optIdx];
+        async function delQ(part, row) {
+            if(!confirm("ยืนยันลบข้อสอบนี้?")) return;
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'deleteQuestion', part, row }) });
+                fetchAdminQuestions();
+            } catch(e) { alert("Delete Error"); }
+        }
 
-            // UI Update
-            const group = document.getElementById(`options-group-${qIdx}`);
-            group.querySelectorAll('.option-label').forEach(el => {
-                el.classList.remove('border-shell-yellow', 'bg-yellow-50/50');
-                el.querySelector('.border-2').classList.remove('border-shell-yellow');
-                el.querySelector('.check-indicator').classList.add('hidden');
-            });
-            const selected = document.getElementById(`lbl-${qIdx}-${optIdx}`);
-            selected.classList.add('border-shell-yellow', 'bg-yellow-50/50');
-            selected.querySelector('.border-2').classList.add('border-shell-yellow');
-            selected.querySelector('.check-indicator').classList.remove('hidden');
-        };
+        let editingRow = null;
+        function openAddQuestionModal() {
+            editingRow = null;
+            document.getElementById('q-modal-title').innerText = "เพิ่มข้อสอบใหม่";
+            // clear inputs
+            ['q-text','q-opt1','q-opt2','q-opt3'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('q-modal').classList.remove('hidden');
+        }
 
-        // 5. Submit
-        document.getElementById('btn-submit-quiz').addEventListener('click', async () => {
-            if(Object.keys(state.answers).length < state.questions.length) {
-                alert("กรุณาทำข้อสอบให้ครบทุกข้อ");
-                return;
+        function editQ(part, row) {
+            const q = state.adminQs['part'+part].find(x => x.row == row);
+            if(!q) return;
+            editingRow = row;
+            document.getElementById('q-modal-title').innerText = "แก้ไขข้อสอบ";
+            document.getElementById('q-text').value = q.Question;
+            document.getElementById('q-opt1').value = q.Option1;
+            document.getElementById('q-opt2').value = q.Option2;
+            if(part != 1) {
+                document.getElementById('q-process').value = q.ProcessName;
+                document.getElementById('q-opt3').value = q.Option3;
             }
+            document.getElementById('q-modal').classList.remove('hidden');
+        }
 
-            const btn = document.getElementById('btn-submit-quiz');
-            btn.innerHTML = `<span class="animate-spin">⌛</span> กำลังประมวลผล...`;
-            btn.disabled = true;
-
-            let score = 0;
-            state.questions.forEach(q => {
-                if(normalize(state.answers[q.id]) === normalize(q.correct)) score++;
-            });
-
-            const passed = (score === state.questions.length);
-
-            // Send Result to GAS
-            if(passed && !state.isMock) {
-                try {
-                    await fetch(GOOGLE_SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            action: 'submit',
-                            user: state.user,
-                            selection: state.selection,
-                            score, 
-                            total: state.questions.length,
-                            status: 'Passed'
-                        })
-                    });
-                } catch(e) { console.error(e); }
-            }
-
-            // Show Result
-            document.querySelector('.score-display').innerText = `${score}/${state.questions.length}`;
-            document.getElementById('result-pass').classList.toggle('hidden', !passed);
-            document.getElementById('result-fail').classList.toggle('hidden', passed);
-            showSection('result');
+        async function submitQuestion() {
+            const part = document.getElementById('filter-part').value;
+            const body = {
+                action: editingRow !== null ? 'editQuestion' : 'addQuestion',
+                part: part,
+                row: editingRow,
+                process: part == 1 ? '' : document.getElementById('q-process').value,
+                question: document.getElementById('q-text').value,
+                opt1: document.getElementById('q-opt1').value,
+                opt2: document.getElementById('q-opt2').value,
+                opt3: document.getElementById('q-opt3').value,
+            };
             
-            btn.innerHTML = "ส่งคำตอบ";
-            btn.disabled = false;
-        });
+            // Resolve Correct Value based on index
+            const idx = document.getElementById('q-correct-idx').value;
+            const opts = [body.opt1, body.opt2, body.opt3];
+            body.correct = opts[parseInt(idx)-1];
 
-        // --- ADMIN LOGIC ---
+            if(!body.question || !body.opt1 || !body.opt2) { alert("กรอกข้อมูลไม่ครบ"); return; }
 
-        function toggleAdminLogin() {
-            document.getElementById('admin-login-modal').classList.remove('hidden');
-            document.getElementById('admin-pin-input').value = '';
-            document.getElementById('admin-pin-input').focus();
-        }
-
-        function closeAdminLogin() {
-            document.getElementById('admin-login-modal').classList.add('hidden');
-        }
-
-        function checkAdminLogin() {
-            const pin = document.getElementById('admin-pin-input').value;
-            if(pin === ADMIN_PIN) {
-                closeAdminLogin();
-                showSection('admin');
-                state.isAdmin = true;
-                // Load Dashboard by default
-                switchAdminTab('dashboard');
-                fetchDashboardData();
-            } else {
-                alert("รหัสผ่านไม่ถูกต้อง");
-            }
-        }
-
-        function exitAdmin() {
-            state.isAdmin = false;
-            showSection('login');
-        }
-
-        function switchAdminTab(tab) {
-            const tabs = ['dashboard', 'master', 'questions'];
-            tabs.forEach(t => {
-                const btn = document.getElementById(`tab-${t}`);
-                const view = document.getElementById(`admin-view-${t}`);
-                if (t === tab) {
-                    btn.classList.replace('bg-slate-700', 'bg-white');
-                    btn.classList.replace('text-slate-300', 'text-slate-900');
-                    view.classList.remove('hidden');
-                } else {
-                    btn.classList.replace('bg-white', 'bg-slate-700');
-                    btn.classList.replace('text-slate-900', 'text-slate-300');
-                    view.classList.add('hidden');
-                }
-            });
-        }
-
-        async function fetchDashboardData() {
-            const listContainer = document.getElementById('dash-recent-list');
-            listContainer.innerHTML = '<div class="text-center text-slate-400 text-xs py-4">กำลังโหลดข้อมูล...</div>';
-
-            let data = null;
-
-            if (!state.isMock) {
-                try {
-                    // Try to fetch real summary if action exists on backend
-                    // If not implemented on backend, we might simulate or fail gracefully
-                    // For now, we assume backend might not support it yet, so we use mock logic fallback
-                    // or user needs to add 'getSummary' to GAS
-                    // Uncomment below if backend supports it:
-                    // const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=getSummary`);
-                    // data = await res.json();
-                    
-                    // Since backend code isn't provided in context to have changed, I will fallback to mock
-                    // But in a real scenario, you'd fetch here.
-                    throw new Error("Backend summary not implemented yet"); 
-                } catch(e) {
-                    console.log("Fetching summary failed or not implemented, using mock.");
-                }
-            }
-
-            if (!data) {
-                // Mock Data for Dashboard
-                data = {
-                    total: 124,
-                    passed: 108,
-                    failed: 16,
-                    recent: [
-                        { name: 'สมชาย รักดี', line: 'Line A', score: '5/5', status: 'Passed', time: '10:30' },
-                        { name: 'วิชัย ใจมั่น', line: 'Line B', score: '4/5', status: 'Failed', time: '10:15' },
-                        { name: 'กานดา มีสุข', line: 'Line A', score: '5/5', status: 'Passed', time: '09:45' },
-                        { name: 'มานะ อดทน', line: 'Line C', score: '5/5', status: 'Passed', time: '09:30' },
-                        { name: 'ชูใจ ใฝ่ดี', line: 'Line B', score: '3/5', status: 'Failed', time: '09:10' }
-                    ]
-                };
-            }
-
-            // Update UI
-            document.getElementById('dash-total').innerText = data.total;
-            document.getElementById('dash-passed').innerText = data.passed;
-            document.getElementById('dash-failed').innerText = data.failed;
-            document.getElementById('dash-total-sub').innerText = data.total;
-            
-            const passRate = Math.round((data.passed / data.total) * 100) || 0;
-            document.getElementById('dash-rate-text').innerText = `${passRate}%`;
-            document.getElementById('dash-rate-bar').style.width = `${passRate}%`;
-
-            // Render List
-            listContainer.innerHTML = '';
-            data.recent.forEach(item => {
-                const isPass = item.status === 'Passed';
-                const div = document.createElement('div');
-                div.className = 'flex items-center justify-between p-3 rounded-lg border border-slate-50 bg-slate-50/50';
-                div.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center ${isPass ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}">
-                            <i data-lucide="${isPass ? 'check' : 'x'}" class="w-4 h-4"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-slate-700 leading-tight">${item.name}</p>
-                            <p class="text-[10px] text-slate-400">${item.line} • ${item.time}</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-xs font-bold ${isPass ? 'text-green-600' : 'text-red-500'}">${item.status}</span>
-                        <p class="text-[10px] text-slate-400">Score: ${item.score}</p>
-                    </div>
-                `;
-                listContainer.appendChild(div);
-            });
-            lucide.createIcons();
-        }
-
-        // Admin: Save Master
-        async function saveMasterData() {
-            const btn = document.getElementById('btn-save-master');
-            const linesStr = document.getElementById('edit-lines').value;
-            const procsStr = document.getElementById('edit-processes').value;
-            
-            // Convert comma string to array
-            const linesArr = linesStr.split(',').map(s => s.trim()).filter(s => s);
-            const procsArr = procsStr.split(',').map(s => s.trim()).filter(s => s);
-
-            if(!state.isMock) {
-                btn.disabled = true;
-                btn.innerText = "กำลังบันทึก...";
-                try {
-                    await fetch(GOOGLE_SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            action: 'updateMaster',
-                            lines: linesArr,
-                            processes: procsArr
-                        })
-                    });
-                    alert("บันทึกข้อมูลเรียบร้อยแล้ว");
-                } catch(e) {
-                    alert("เกิดข้อผิดพลาด: " + e.message);
-                } finally {
-                    btn.disabled = false;
-                    btn.innerText = "บันทึกข้อมูล Master";
-                }
-            } else {
-                alert("(Offline Mode) บันทึกจำลองเรียบร้อย");
-            }
-        }
-
-        function toggleProcessSelect() {
-            const part = document.getElementById('new-q-part').value;
-            const wrapper = document.getElementById('new-q-process-wrapper');
-            const extraOpts = document.getElementById('extra-options');
-            
-            if(part == '1') {
-                wrapper.classList.add('hidden');
-                // Part 1 True/False -> Hide option 3 input or clear it
-            } else {
-                wrapper.classList.remove('hidden');
-            }
-        }
-
-        // Admin: Save Question
-        async function saveNewQuestion() {
-            const part = document.getElementById('new-q-part').value;
-            const process = document.getElementById('new-q-process').value;
-            const text = document.getElementById('new-q-text').value;
-            const opt1 = document.getElementById('opt-1').value;
-            const opt2 = document.getElementById('opt-2').value;
-            const opt3 = document.getElementById('opt-3').value;
-            const correctIdx = document.getElementById('new-q-correct').value;
-
-            if(!text || !opt1 || !opt2) {
-                alert("กรุณากรอกข้อมูลคำถามและตัวเลือกอย่างน้อย 2 ข้อ");
-                return;
-            }
-
-            // Map correct index to value
-            const options = [opt1, opt2, opt3].filter(o => o);
-            const correctVal = options[parseInt(correctIdx) - 1];
-
-            if(!correctVal) {
-                alert("กรุณาเลือกข้อที่ถูกต้องให้สัมพันธ์กับตัวเลือก");
-                return;
-            }
-
-            const btn = document.getElementById('btn-save-question');
-            if(!state.isMock) {
-                btn.disabled = true;
-                btn.innerText = "กำลังบันทึก...";
-                try {
-                    await fetch(GOOGLE_SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            action: 'addQuestion',
-                            part: parseInt(part),
-                            process: (part == '1') ? '' : process,
-                            question: text,
-                            opt1, opt2, opt3,
-                            correct: correctVal
-                        })
-                    });
-                    alert("เพิ่มข้อสอบเรียบร้อยแล้ว");
-                    // Clear inputs
-                    document.getElementById('new-q-text').value = '';
-                    document.getElementById('opt-1').value = '';
-                    document.getElementById('opt-2').value = '';
-                    document.getElementById('opt-3').value = '';
-                } catch(e) {
-                    alert("เกิดข้อผิดพลาด: " + e.message);
-                } finally {
-                    btn.disabled = false;
-                    btn.innerText = "บันทึกข้อสอบ";
-                }
-            } else {
-                alert("(Offline Mode) บันทึกจำลองเรียบร้อย");
-            }
-        }
-
-        // --- UTILS ---
-        function normalize(str) { return str ? String(str).trim() : ''; }
-        function getMockQuestions() {
-            return [
-                { id: 'm1', part: 1, text: 'Mock Q1', options: ['A','B'], correct: 'A' },
-                { id: 'm2', part: 2, text: 'Mock Q2', options: ['X','Y','Z'], correct: 'X' },
-                { id: 'm3', part: 3, text: 'Mock Q3', options: ['High','Low','Mid'], correct: 'High' }
-            ];
+            try {
+                if(!state.isMock) {
+                    await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(body) });
+                    alert("บันทึกเรียบร้อย");
+                    document.getElementById('q-modal').classList.add('hidden');
+                    fetchAdminQuestions();
+                } else alert("Mock Save");
+            } catch(e) { alert("Save Error"); }
         }
 
     </script>
