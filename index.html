@@ -21,7 +21,7 @@
     <!-- CONFIGURATION -->
     <script>
         // --- นำ Web App URL ที่ได้จากการ Deploy Google Apps Script มาใส่ตรงนี้ ---
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwJxaPVPAID31W_i3HMZ_WRfq-j3AqoFKdPDksS5ftp5cR7nWyLlD66G871zsoForzV/exec"; 
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRKh2bN0Gs-smSDTjaolLD0lUfhoBxHjtvllsFPTFG8iXc85tmWLHCkhzrB23Le6gh/exec"; 
     </script>
 
     <!-- HEADER -->
@@ -455,8 +455,16 @@
             let score = 0;
             let isAllCorrect = true;
             state.questions.forEach(q => {
-                if (state.answers[q.id] === q.correct) score++;
-                else isAllCorrect = false;
+                // FIXED: Trim whitespace from both answers to prevent mismatch due to spaces
+                const userAns = String(state.answers[q.id] || '').trim();
+                const correctAns = String(q.correct || '').trim();
+                
+                if (userAns === correctAns) {
+                    score++;
+                } else {
+                    isAllCorrect = false;
+                    console.log(`Wrong Answer at Q: ${q.text}. User: "${userAns}", Correct: "${correctAns}"`);
+                }
             });
 
             const passed = isAllCorrect; // ต้องถูก 100%
@@ -511,5 +519,3 @@
     </script>
 </body>
 </html>
-
-
