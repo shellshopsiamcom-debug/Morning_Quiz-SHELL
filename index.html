@@ -402,10 +402,11 @@
                 card.className = 'bg-white p-6 rounded-xl shadow-sm border border-slate-200';
                 
                 let optionsHtml = '';
-                q.options.forEach(opt => {
+                q.options.forEach((opt, optIdx) => {
+                    // Update: Use indices (idx, optIdx) to avoid quoting issues in inline handlers
                     optionsHtml += `
-                        <label class="flex items-center p-3 rounded-lg border cursor-pointer hover:bg-slate-50 border-slate-200 transition select-none option-label" data-qid="${q.id}">
-                            <input type="radio" name="${q.id}" value="${opt}" onchange="handleAnswer('${q.id}', '${opt}')" class="h-5 w-5 text-yellow-500 focus:ring-yellow-400 border-gray-300 accent-yellow-500">
+                        <label class="flex items-center p-3 rounded-lg border cursor-pointer hover:bg-slate-50 border-slate-200 transition select-none option-label" id="lbl-${idx}-${optIdx}">
+                            <input type="radio" name="${q.id}" value="${opt}" onchange="handleAnswer(${idx}, ${optIdx})" class="h-5 w-5 text-yellow-500 focus:ring-yellow-400 border-gray-300 accent-yellow-500">
                             <span class="ml-3 text-slate-700">${opt}</span>
                         </label>
                     `;
@@ -424,22 +425,37 @@
             });
         }
 
-        window.handleAnswer = (qId, val) => {
-            state.answers[qId] = val;
-            // Highlight styling
-            const container = document.getElementById(`options-${qId}`);
-            const labels = container.querySelectorAll('label');
+        // Updated handleAnswer: uses indices to get values safely
+        window.handleAnswer = (qIdx, optIdx) => {
+            const q = state.questions[qIdx];
+            const val = q.options[optIdx];
+            state.answers[q.id] = val;
+            
+            // Highlight styling logic
+            const container = document.getElementById(`options-${q.id}`);
+            // Reset all styles in this group
+            const labels = container.querySelectorAll('.option-label');
             labels.forEach(lbl => {
-                const radio = lbl.querySelector('input');
-                if (radio.checked) {
-                    lbl.classList.add('bg-yellow-50', 'border-yellow-400', 'shadow-sm');
-                    lbl.classList.remove('border-slate-200');
-                } else {
-                    lbl.classList.remove('bg-yellow-50', 'border-yellow-400', 'shadow-sm');
-                    lbl.classList.add('border-slate-200');
-                }
+                lbl.classList.remove('bg-yellow-50', 'border-yellow-400', 'shadow-sm');
+                lbl.classList.add('border-slate-200');
             });
+
+            // Set style for selected
+            const selectedLbl = document.getElementById(`lbl-${qIdx}-${optIdx}`);
+            if (selectedLbl) {
+                selectedLbl.classList.add('bg-yellow-50', 'border-yellow-400', 'shadow-sm');
+                selectedLbl.classList.remove('border-slate-200');
+            }
         };
+
+        // Helper to normalize text for comparison
+        function normalizeText(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/\u200B/g, '') // Remove zero-width space
+                .replace(/\s+/g, ' ')   // Collapse multiple spaces
+                .trim();                // Trim ends
+        }
 
         document.getElementById('btn-submit-quiz').addEventListener('click', async () => {
             if (Object.keys(state.answers).length < state.questions.length) {
@@ -454,18 +470,26 @@
             // Check Answers
             let score = 0;
             let isAllCorrect = true;
-            state.questions.forEach(q => {
-                // FIXED: Trim whitespace from both answers to prevent mismatch due to spaces
-                const userAns = String(state.answers[q.id] || '').trim();
-                const correctAns = String(q.correct || '').trim();
+            
+            console.group("Quiz Grading Debug");
+            state.questions.forEach((q, idx) => {
+                const userAns = normalizeText(state.answers[q.id]);
+                const correctAns = normalizeText(q.correct);
                 
+                // Compare normalized strings
                 if (userAns === correctAns) {
                     score++;
+                    console.log(`✅ Q${idx+1}: Correct`);
                 } else {
                     isAllCorrect = false;
-                    console.log(`Wrong Answer at Q: ${q.text}. User: "${userAns}", Correct: "${correctAns}"`);
+                    console.log(`❌ Q${idx+1}: Incorrect`);
+                    console.log(`   - Selected: "${userAns}"`);
+                    console.log(`   - Correct:  "${correctAns}"`);
+                    console.log(`   - Raw Selected: "${state.answers[q.id]}"`);
+                    console.log(`   - Raw Correct:  "${q.correct}"`);
                 }
             });
+            console.groupEnd();
 
             const passed = isAllCorrect; // ต้องถูก 100%
 
